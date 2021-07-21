@@ -70,7 +70,7 @@ Splits a list into sub-lists stored in an object, based on the result of **eithe
 Dispatches to the `groupBy` method of the second argument, if present.
 
 ```Typescript
-const ObjType = { a: string }
+type ObjType = { a: string }
 const groupByFn = groupBy<ObjType>((item: ObjType) => (item.a === 'b') ? 'foo' : 'bar')
 
 console.log(groupByFn([{ a: 'b' }, { a: 'd' }])) // { foo: [{ a: 'b' }], bar: [{ a: 'd' }] }
