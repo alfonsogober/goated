@@ -1,0 +1,9 @@
+export type Mapper<T, K> = (element: T, indexOrKey: number | string, arrayOrObj?: List<T>) => K
+
+export type Reducer<T> = (prev: T, curr: T, indexOrKey: number | string, arrayOrObj?: List<T>) => any
+
+export type Curried<T, K> = (...input: T[]) => K
+
+export type Predicate<T> = (input: T) => boolean
+
+export type List<T> = Array<T> | Object
