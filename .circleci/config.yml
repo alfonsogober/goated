@@ -18,7 +18,6 @@ workflows:
   sample:
     jobs:
       - test:
-          version: "16.0"
           filters:
             branches:
               ignore: main
