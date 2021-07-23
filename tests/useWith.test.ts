@@ -11,16 +11,13 @@ const expect = chai.expect;
 
 describe("goated.useWith()", () => {
   it("should work with all arguments supplied", () => {
-    const fn = useWith<number, number>(Math.pow, [identity, identity]);
+    const fn = useWith<number>(Math.pow, [identity, identity]);
 
     expect(fn(3, 4)).to.equal(81);
   });
 
   it("should work with not all arguments supplied", () => {
-    const fn = useWith<number, Curried<number, number>>(Math.pow, [
-      identity,
-      identity,
-    ]);
+    const fn = useWith<number>(Math.pow, [identity, identity]);
 
     const fn3 = fn(3);
 
@@ -29,10 +26,7 @@ describe("goated.useWith()", () => {
 
   it("should pass surplus args directly to fn", () => {
     const spy = chai.spy.on(Math, "pow");
-    const fn = useWith<number, Curried<number, number>>(Math.pow, [
-      identity,
-      identity,
-    ]);
+    const fn = useWith<number>(Math.pow, [identity, identity]);
 
     const fn3 = fn(3);
 

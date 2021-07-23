@@ -10,6 +10,12 @@ export declare type Reducer<T, K> = (
   arrayOrObj?: List<T>
 ) => K;
 export declare type Curried<T, K> = (...input: T[]) => K;
+export declare type Semigroup<T> =
+  | {
+      concat: (a: Semigroup<T>) => Semigroup<T>;
+    }
+  | Array<T>
+  | string;
 export declare type Predicate<T> = (input: T) => boolean;
 export declare type List<T> = Array<T> | Object;
 export declare type GroupSelector<T> = (item: T) => string | number | symbol;

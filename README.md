@@ -38,8 +38,12 @@ import { map, pipe, keys, filter, /* etc */ } from 'goated'
 
 ### Quick Reference
 
+- [`always`](#always)
 - [`compose`](#compose)
+- [`concat`](#concat)
+- [`cond`](#cond)
 - [`equals`](#equals)
+- [`F`](#F)
 - [`filter`](#filter)
 - [`groupBy`](#groupBy)
 - [`identity`](#identity)
@@ -50,15 +54,29 @@ import { map, pipe, keys, filter, /* etc */ } from 'goated'
 - [`pick`](#pick)
 - [`pipe`](#pipe)
 - [`prop`](#prop)
+- [`propOr`](#propOr)
 - [`reduce`](#reduce)
 - [`reject`](#reject)
+- [`T`](#T)
+- [`tail`](#tail)
 - [`useWith`](#useWith)
 - [`values`](#values)
 - [`when`](#when)
 
+### always
+
+Returns a function that always returns the given value. Note that for non-primitives the value returned is a reference to the original value.
+
+```Typescript
+const foo = always('foo')
+foo() // 'foo'
+```
+
 ### compose
 
 Performs right-to-left function composition. The last argument may have any arity; the remaining arguments must be unary.
+
+See also [`pipe`](#pipe)
 
 ```Typescript
 const negate = (num) => -num
@@ -78,6 +96,36 @@ const doubleThenAdd = compose<number[], number>(<Curried<number, number>>reduce(
 // Necessary because map() returns either a curried fn or a list.
 
 doubleThenAdd([1, 2, 3]) // 12
+```
+
+### concat
+
+Returns the result of concatenating the given lists or strings.
+
+Note: `concat` expects both arguments to be of the same type, unlike the native `Array.prototype.concat` method. It will throw an error if you concat an Array with a non-Array value.
+
+```Typescript
+concat([1, 2], [3, 4, 5]) // [1, 2, 3, 4, 5]
+
+const concatOneTwo = concat([1, 2])
+
+concatOneTwo([3, 4, 5]) // [1, 2, 3, 4, 5]
+```
+
+### cond
+
+Returns a function, `fn`, which encapsulates `if/else, if/else, ...` logic. `cond` takes a list of [predicate, transformer] pairs. All of the arguments to `fn` are applied to each of the predicates in turn until one returns a "truthy" value, at which point `fn` returns the result of applying its arguments to the corresponding transformer. If none of the predicates matches, `fn` returns undefined.
+
+```Typescript
+const fn = cond([
+  [<Curried<number, boolean>>equals(0), always("water freezes at 0°C")],
+  [<Curried<number, boolean>>equals(100), always("water boils at 100°C")],
+  [T, (temp) => "nothing special happens at " + temp + "°C"],
+])
+
+fn(0) // 'water freezes at 0°C'
+fn(50) // 'nothing special happens at 50°C'
+fn(100) // 'water boils at 100°C'
 ```
 
 ### equals
@@ -102,6 +150,16 @@ const equalsA = equals(a)
 equalsA(b) // true
 ```
 
+### F
+
+A function that always returns `false`. Any passed in parameters are ignored.
+
+See also [`T`](#T)
+
+```Typescript
+F() // false
+```
+
 ### filter
 
 Takes a predicate and a Filterable, and returns a new filterable of the same type containing the members of the given filterable which satisfy the given predicate. Filterable objects include plain objects or any object that has a filter method such as Array.
@@ -109,6 +167,8 @@ Takes a predicate and a Filterable, and returns a new filterable of the same typ
 Dispatches to the `filter` method of the second argument, if present.
 
 ```Typescript
+type Foo = { foo: number; bar: number; baz: number };
+
 const onlyOdd = (item: number) => item % 2 === 1
 
 const array = [1, 2, 3]
@@ -118,6 +178,10 @@ filter<number>(onlyOdd, array) // [1, 3]
 const obj = { foo: 1, bar: 2, baz: 3 }
 
 filter<number>(onlyOdd, obj) // { foo: 1, baz: 3 }
+
+const filterOnlyOdd = <Curried<Foo, number>>filter<number>(onlyOdd);
+
+filterOnlyOdd(obj) // { foo: 1, baz: 3 }
 ```
 
 ### groupBy
@@ -212,6 +276,8 @@ pick(['a', 'e', 'f'])({ a: 1, b: 2, c: 3, d: 4 }); // { a: 1 }
 
 Performs left-to-right function composition. The first argument may have any arity; the remaining arguments must be unary.
 
+See also [`compose`](#compose)
+
 ```Typescript
 const negate = (num) => -num
 const powThenNegate = pipe<number, number>(Math.pow, negate) // Works with bound functions and preserves context
@@ -242,6 +308,22 @@ prop('x', {}); // undefined
 prop(0, [100]); // 100
 ```
 
+### propOr
+
+If the given, non-null object has an own property with the specified name, returns the value of that property. Otherwise returns the provided default value.
+
+```Typescript
+const alice = {
+  name: 'ALICE',
+  age: 101
+};
+const favorite = R.prop('favoriteLibrary');
+const favoriteWithDefault = R.propOr('Goated', 'favoriteLibrary');
+
+favorite(alice);  //=> undefined
+favoriteWithDefault(alice);  // 'Goated'
+```
+
 ### reduce
 
 Returns a single item by iterating through the list, successively calling the iterator function and passing it an accumulator value and the current value from the array, and then passing the result to the next call.
@@ -257,7 +339,7 @@ reduce<number, number>(add, 0, array) // 6
 
 ### reject
 
-The complement of [`filter`](#filter)
+The complement of [`filter`](#filter).
 
 ```Typescript
 const rejectOdd = (item: number) => item % 2 === 1
@@ -271,9 +353,39 @@ const obj = { foo: 1, bar: 2, baz: 3 }
 filter<number>(rejectOdd, obj) // { bar: 2 }
 ```
 
+### T
+
+A function that always returns `true`. Any passed in parameters are ignored.
+
+See also [`F`](#F)
+
+```Typescript
+T() // true
+```
+
+### tail
+
+Returns all but the first element of the given list or string (or object with a tail method).
+
+Dispatches to the `slice` method of the first argument, if present.
+
+```Typescript
+tail([1, 2, 3])  // [2, 3]
+```
+
+### take
+
+Returns the first `n` elements of the given list or string (or object with a take method).
+
+Dispatches to the `take` method of the second argument, if present.
+
+```Typescript
+take<string>(2, ['foo', 'bar', 'baz']) // ['foo', 'bar']
+```
+
 ### useWith
 
-Accepts a function fn and a list of transformer functions and returns a new curried function. When the new function is invoked, it calls the function fn with parameters consisting of the result of calling each supplied handler on successive arguments to the new function.
+Accepts a function `fn` and a list of transformer functions and returns a new curried function. When the new function is invoked, it calls the function fn with parameters consisting of the result of calling each supplied handler on successive arguments to the new function.
 
 If more arguments are passed to the returned function than transformer functions, those arguments are passed directly to fn as additional parameters. If you expect additional arguments that don't need to be transformed, although you can ignore them, it's best to pass an identity function so that the new function reports the correct arity.
 

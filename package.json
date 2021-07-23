@@ -1,6 +1,6 @@
 {
   "name": "goated",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "a currying library for goats 🐐",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,6 +8,7 @@
     "/dist"
   ],
   "scripts": {
+    "format": "yarn prettier --write . ",
     "test": "tsc && ./node_modules/.bin/mocha -r ts-node/register tests/**/*.test.ts"
   },
   "repository": "git@github.com:alfonsogoberjr/goated.git",

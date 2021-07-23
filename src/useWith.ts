@@ -1,9 +1,9 @@
 import { Curried } from "./types";
 
-export function useWith<Input, Output>(
+export function useWith<Input>(
   fn: Function,
   transformers: Function[]
-): Curried<Input, Output> {
+): Curried<Input, any> {
   let accumulatedArgs = [];
   function curriedFn(...args) {
     accumulatedArgs = accumulatedArgs.concat(args);

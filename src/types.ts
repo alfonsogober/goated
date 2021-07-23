@@ -13,6 +13,11 @@ export type Reducer<T, K> = (
 
 export type Curried<T, K> = (...input: T[]) => K;
 
+export type Semigroup<T> =
+  | { concat: (a: Semigroup<T>) => Semigroup<T> }
+  | Array<T>
+  | string;
+
 export type Predicate<T> = (input: T) => boolean;
 
 export type List<T> = Array<T> | Object;
