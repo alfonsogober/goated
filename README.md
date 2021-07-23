@@ -53,6 +53,7 @@ import { map, pipe, keys, filter, /* etc */ } from 'goated'
 - [`map`](#map)
 - [`not`](#not)
 - [`omit`](#omit)
+- [`pathOr`](#pathOr)
 - [`pick`](#pick)
 - [`pipe`](#pipe)
 - [`prop`](#prop)
@@ -263,6 +264,26 @@ Returns a partial copy of an object omitting the keys specified.
 
 ```Typescript
 omit(['a', 'd'], { a: 1, b: 2, c: 3, d: 4 }); // { b: 2, c: 3 }
+
+const omitAD = omit(['a', 'd'])
+
+omitAD({ a: 1, b: 2, c: 3, d: 4 }) // { b: 2, c: 3 }
+```
+
+### pathOr
+
+If the given, non-null object has a value at the given path, returns the value at that path. Otherwise returns the provided default value.
+
+```Typescript
+type Foo = { foo?: { bar?: number; baz: number } };
+
+const obj: Foo = { foo: { bar: 2, baz: 3 } };
+
+pathOr<Foo>(4, ["foo", "bar"], obj) // 2
+
+const missingBar: Foo = { foo: { baz: 3 } };
+
+pathOr<Foo>(4, ["foo", "bar"], missingBar) // 4
 ```
 
 ### pick

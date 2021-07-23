@@ -10,6 +10,7 @@ export * from "./keys";
 export * from "./map";
 export * from "./not";
 export * from "./omit";
+export * from "./pathOr";
 export * from "./pick";
 export * from "./pipe";
 export * from "./prop";
