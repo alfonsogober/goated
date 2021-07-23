@@ -4,7 +4,7 @@ a currying library for goats 🐐
 
 **g**reatest library **o**f **a**ll **t**ime!
 
-![https://img.shields.io/npm/v/goated]()
+![](https://img.shields.io/npm/v/goated)
 
 ---
 
