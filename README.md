@@ -70,6 +70,8 @@ powThenNegate(3, 3) // -27
 Note that the first argument passed to `compose`, if it's a `goated` method where currying is optional (like `map`), its type must be explicitly set using either `as` or `<>`, like so:
 
 ```Typescript
+import { Curried } from 'goated/dist/types'
+
 const double = map((num: number) => num * 2)
 const add = (a, b) => a + b
 const doubleThenAdd = compose<number[], number>(<Curried<number, number>>reduce(add, 0), double)
@@ -220,6 +222,8 @@ powThenNegate(3, 3) // -27
 Note that the first argument passed to `pipe`, if it's a `goated` method where currying is optional (like `map`), its type must be explicitly set using either `as` or `<>`, like so:
 
 ```Typescript
+import { Curried } from 'goated/dist/types'
+
 const double = map((num: number) => num * 2)
 const add = (a, b) => a + b
 const doubleThenAdd = pipe<number[], number>(<Curried<number, number>>double, reduce(add, 0))
@@ -280,6 +284,8 @@ fn(3, 4) // 81
 ```
 
 ```Typescript
+import { Curried } from 'goated/dist/types'
+
 const fn = useWith<number, Curried<number, number>>(Math.pow, [identity, identity]);
 
 const fn3 = fn(3)
@@ -288,6 +294,8 @@ fn3(4) // 81
 ```
 
 ```Typescript
+import { Curried } from 'goated/dist/types'
+
 const fn = useWith<number, Curried<number, number>>(Math.pow, [identity, identity]);
 
 const fn3 = fn(3)
