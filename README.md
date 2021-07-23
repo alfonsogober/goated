@@ -4,6 +4,8 @@ a currying library for goats 🐐
 
 **g**reatest library **o**f **a**ll **t**ime!
 
+![https://img.shields.io/npm/v/goated]()
+
 ---
 
 ![Curry Goat, best dish on the planet](http://www.browngirlmagazine.com/wp-content/uploads/2017/07/Angled-Hero-Image.jpg)
