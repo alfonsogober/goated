@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "format": "yarn prettier --write . ",
-    "test": "tsc && ./node_modules/.bin/mocha -r ts-node/register tests/**/*.test.ts"
+    "test": "./node_modules/.bin/tsc && ./node_modules/.bin/mocha -r ts-node/register tests/**/*.test.ts"
   },
   "repository": "git@github.com:alfonsogoberjr/goated.git",
   "author": "Alfonso Gober <alfonso.gober.jr@gmail.com>",
