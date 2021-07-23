@@ -1,1 +1,1 @@
-export declare function keys<Object>(obj: Object): string[];
+export declare function keys<Input>(obj: Input): Array<keyof Input>;

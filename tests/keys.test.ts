@@ -8,9 +8,10 @@ const expect = chai.expect;
 describe('goated.keys()', () => {
 
   it('should return object keys' , () => {
-    const obj = { 'foo': 1, 'bar': 2, 'baz': 3 }
+    type Foo = { foo: number; bar: number; baz: number; }
+    const obj: Foo = { foo: 1, bar: 2, baz: 3 }
     
-    expect(keys(obj)).to.deep.equal(['foo', 'bar', 'baz']);
+    expect(keys<Foo>(obj)).to.deep.equal(['foo', 'bar', 'baz']);
   });
 
 });

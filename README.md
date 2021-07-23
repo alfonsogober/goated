@@ -2,6 +2,8 @@
 
 a currying library for goats 🐐
 
+**g**reatest library **o**f **a**ll **t**ime!
+
 ---
 
 ![Curry Goat, best dish on the planet](http://www.browngirlmagazine.com/wp-content/uploads/2017/07/Angled-Hero-Image.jpg)
@@ -34,6 +36,26 @@ import { map, pipe, keys, filter, /* etc */ } from 'goated'
 
 ## API
 
+### Quick Reference
+
+- [`compose`](#compose)
+- [`equals`](#equals)
+- [`filter`](#filter)
+- [`groupBy`](#groupBy)
+- [`identity`](#identity)
+- [`keys`](#keys)
+- [`map`](#map)
+- [`not`](#not)
+- [`omit`](#omit)
+- [`pick`](#pick)
+- [`pipe`](#pipe)
+- [`prop`](#prop)
+- [`reduce`](#reduce)
+- [`reject`](#reject)
+- [`useWith`](#useWith)
+- [`values`](#values)
+- [`when`](#when)
+
 ### compose
 
 Performs right-to-left function composition. The last argument may have any arity; the remaining arguments must be unary.
@@ -42,7 +64,40 @@ Performs right-to-left function composition. The last argument may have any arit
 const negate = (num) => -num
 const powThenNegate = compose<number, number>(negate, Math.pow) // Works with bound functions and preserves context
 
-console.log(powThenNegate(3, 3)) // -27
+powThenNegate(3, 3) // -27
+```
+
+Note that the first argument passed to `compose`, if it's a `goated` method where currying is optional (like `map`), its type must be explicitly set using either `as` or `<>`, like so:
+
+```Typescript
+const double = map((num: number) => num * 2)
+const add = (a, b) => a + b
+const doubleThenAdd = compose<number[], number>(<Curried<number, number>>reduce(add, 0), double)
+// Necessary because map() returns either a curried fn or a list.
+
+doubleThenAdd([1, 2, 3]) // 12
+```
+
+### equals
+
+Returns true if its arguments are equivalent, false otherwise. Handles cyclical data structures.
+
+Dispatches to `lodash.isEqual`. No need to reinvent the wheel.
+
+Unlike `R.equals`, `equals` can be curried.
+
+```Typescript
+equals(1, 1); // true
+equals(1, '1'); // false
+equals([1, 2, 3], [1, 2, 3]); // true
+
+const a = {}; a.v = a;
+const b = {}; b.v = b;
+equals(a, b); // true
+
+const equalsA = equals(a)
+
+equalsA(b) // true
 ```
 
 ### filter
@@ -56,11 +111,11 @@ const onlyOdd = (item: number) => item % 2 === 1
 
 const array = [1, 2, 3]
 
-console.log(filter<number>(onlyOdd, array)) // [1, 3]
+filter<number>(onlyOdd, array) // [1, 3]
 
 const obj = { foo: 1, bar: 2, baz: 3 }
 
-console.log(filter<number>(onlyOdd, obj)) // { foo: 1, baz: 3 }
+filter<number>(onlyOdd, obj) // { foo: 1, baz: 3 }
 ```
 
 ### groupBy
@@ -73,11 +128,23 @@ Dispatches to the `groupBy` method of the second argument, if present.
 type ObjType = { a: string }
 const groupByFn = groupBy<ObjType>((item: ObjType) => (item.a === 'b') ? 'foo' : 'bar')
 
-console.log(groupByFn([{ a: 'b' }, { a: 'd' }])) // { foo: [{ a: 'b' }], bar: [{ a: 'd' }] }
+groupByFn([{ a: 'b' }, { a: 'd' }]) // { foo: [{ a: 'b' }], bar: [{ a: 'd' }] }
 
 const groupByKey = groupBy<ObjType>('a')
 
-console.log(groupByKey([{ a: 'b' }, { a: 'd' }])) // { b: [{ a: 'b' }], d: [{ a: 'd' }] }
+groupByKey([{ a: 'b' }, { a: 'd' }]) // { b: [{ a: 'b' }], d: [{ a: 'd' }] }
+```
+
+### identity
+
+A function that does nothing but return the parameter supplied to it. Good as a default or placeholder function.
+
+```Typescript
+identity(1) // 1
+
+const obj = {};
+
+identity(obj) === obj // true
 ```
 
 ### keys
@@ -85,7 +152,10 @@ console.log(groupByKey([{ a: 'b' }, { a: 'd' }])) // { b: [{ a: 'b' }], d: [{ a:
 Returns a list containing the names of all the enumerable own properties of the supplied object. Note that the order of the output array is not guaranteed to be consistent across different JS platforms.
 
 ```Typescript
-keys({ a: 1, b: 2, c: 3 }); // ['a', 'b', 'c']
+type Foo = { a: number; b: number; c: number; }
+const obj: Foo = { a: 1, b: 2, c: 3 }
+
+keys<Foo>({ a: 1, b: 2, c: 3 }); // ['a', 'b', 'c']
 ```
 
 ### map
@@ -104,8 +174,36 @@ const obj = { 'foo': 1, 'bar': 2, 'baz': 3 }
 
 const double = (item: number) => item * 2
 
-console.log(map(double, array)) // [2, 4, 6]
-console.log(map(double, obj)) // { 'foo': 2, 'bar': 4, 'baz': 6 }
+map<number, number>(double, array) // [2, 4, 6]
+map<number, number>(double, obj) // { 'foo': 2, 'bar': 4, 'baz': 6 }
+```
+
+### not
+
+A function that returns the `!` of its argument. It will return true when passed a falsy value, and false when passed a truthy one.
+
+```Typescript
+not(true); // false
+not(false); // true
+not(0); // true
+not(1); // false
+```
+
+### omit
+
+Returns a partial copy of an object omitting the keys specified.
+
+```Typescript
+omit(['a', 'd'], { a: 1, b: 2, c: 3, d: 4 }); // { b: 2, c: 3 }
+```
+
+### pick
+
+Returns a partial copy of an object containing only the keys specified. If the key does not exist, the property is ignored.
+
+```Typescript
+pick(['a', 'd'], { a: 1, b: 2, c: 3, d: 4 }); // { a: 1, d: 4 }
+pick(['a', 'e', 'f'])({ a: 1, b: 2, c: 3, d: 4 }); // { a: 1 }
 ```
 
 ### pipe
@@ -116,7 +214,28 @@ Performs left-to-right function composition. The first argument may have any ari
 const negate = (num) => -num
 const powThenNegate = pipe<number, number>(Math.pow, negate) // Works with bound functions and preserves context
 
-console.log(powThenNegate(3, 3)) // -27
+powThenNegate(3, 3) // -27
+```
+
+Note that the first argument passed to `pipe`, if it's a `goated` method where currying is optional (like `map`), its type must be explicitly set using either `as` or `<>`, like so:
+
+```Typescript
+const double = map((num: number) => num * 2)
+const add = (a, b) => a + b
+const doubleThenAdd = pipe<number[], number>(<Curried<number, number>>double, reduce(add, 0))
+// Necessary because map() returns either a curried fn or a list.
+
+doubleThenAdd([1, 2, 3]) // 12
+```
+
+### prop
+
+Returns a function that when supplied an object returns the indicated property of that object, if it exists.
+
+```Typescript
+prop('x', { x: 100 }); // 100
+prop('x', {}); // undefined
+prop(0, [100]); // 100
 ```
 
 ### reduce
@@ -129,7 +248,59 @@ The iterator function receives two values: (acc, value).
 const array = [1, 2, 3]
 const add = (a, b) => a + b
 
-console.log(reduce(add, 0, array)) // 6
+reduce<number, number>(add, 0, array) // 6
+```
+
+### reject
+
+The complement of [`filter`](#filter)
+
+```Typescript
+const rejectOdd = (item: number) => item % 2 === 1
+
+const array = [1, 2, 3]
+
+filter<number>(rejectOdd, array) // [2]
+
+const obj = { foo: 1, bar: 2, baz: 3 }
+
+filter<number>(rejectOdd, obj) // { bar: 2 }
+```
+
+### useWith
+
+Accepts a function fn and a list of transformer functions and returns a new curried function. When the new function is invoked, it calls the function fn with parameters consisting of the result of calling each supplied handler on successive arguments to the new function.
+
+If more arguments are passed to the returned function than transformer functions, those arguments are passed directly to fn as additional parameters. If you expect additional arguments that don't need to be transformed, although you can ignore them, it's best to pass an identity function so that the new function reports the correct arity.
+
+```Typescript
+const fn = useWith<number, number>(Math.pow, [identity, identity]);
+
+fn(3, 4) // 81
+```
+
+```Typescript
+const fn = useWith<number, Curried<number, number>>(Math.pow, [identity, identity]);
+
+const fn3 = fn(3)
+
+fn3(4) // 81
+```
+
+```Typescript
+const fn = useWith<number, Curried<number, number>>(Math.pow, [identity, identity]);
+
+const fn3 = fn(3)
+
+fn3(4, 5) // calls Math.pow(3, 4, 5). Output is still 81
+```
+
+### values
+
+Returns a list of all the enumerable own properties of the supplied object. Note that the order of the output array is not guaranteed across different JS platforms.
+
+```Typescript
+values({ a: 1, b: 2, c: 3 }); // [1, 2, 3]
 ```
 
 ### when
@@ -142,5 +313,5 @@ const doBar = (input) => 'bar'
 
 const barWhenFoo = when(isFoo, doBar)
 
-console.log(barWhenFoo('foo')) // 'bar'
+barWhenFoo('foo') // 'bar'
 ```

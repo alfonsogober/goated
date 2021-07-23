@@ -15,15 +15,16 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "@types/bluebird": "^3.5.36",
     "@types/node": "^16.4.0",
-    "bluebird": "^3.7.2",
+    "lodash.isequal": "^4.5.0",
     "typescript": "^4.3.5"
   },
   "devDependencies": {
     "@types/chai": "^4.2.21",
+    "@types/chai-spies": "^1.0.3",
     "@types/mocha": "^8.2.3",
     "chai": "^4.3.4",
+    "chai-spies": "^1.0.0",
     "mocha": "^9.0.2",
     "ts-node": "^10.1.0"
   }

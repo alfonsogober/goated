@@ -1,6 +1,4 @@
 import { groupBy } from '../dist/groupBy'
-import { map } from '../dist/map'
-import { reduce } from '../dist/reduce'
 
 import * as mocha from 'mocha';
 import * as chai from 'chai';

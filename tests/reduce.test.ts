@@ -11,14 +11,14 @@ describe('goated.reduce()', () => {
     const array = [1, 2, 3]
     const add = (a, b) => a + b
     
-    expect(reduce(add, 0, array)).to.equal(6);
+    expect(reduce<number, number>(add, 0, array)).to.equal(6);
   });
 
   it('should reduce object' , () => {
     const obj = { 'foo': 1, 'bar': 2, 'baz': 3 }
     const add = (a, b) => a + b
     
-    expect(reduce(add, 0, obj)).to.equal(6);
+    expect(reduce<number, number>(add, 0, obj)).to.equal(6);
   });
 
 });

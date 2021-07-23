@@ -11,14 +11,14 @@ describe('goated.map()', () => {
     const array = [1, 2, 3]
     const double = (item: number) => item * 2
     
-    expect(map(double, array)).to.deep.equal([2, 4, 6]);
+    expect(map<number, number>(double, array)).to.deep.equal([2, 4, 6]);
   });
 
   it('should map object' , () => {
     const obj = { 'foo': 1, 'bar': 2, 'baz': 3 }
     const double = (item: number) => item * 2
     
-    expect(map(double, obj)).to.deep.equal({ 'foo': 2, 'bar': 4, 'baz': 6 });
+    expect(map<number, number>(double, obj)).to.deep.equal({ 'foo': 2, 'bar': 4, 'baz': 6 });
   });
 
 });

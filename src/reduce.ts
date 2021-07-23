@@ -1,7 +1,7 @@
 import { Reducer, List, Curried } from './types';
 import { keys } from './keys'
 
-export function reduce<Input, Output>(fn: Reducer<Input>, initialElement: Input, arrOrObj?: List<Input>): Output | Curried<Input, Output> {
+export function reduce<Input, Output>(fn: Reducer<Input, Output>, initialElement: Output, arrOrObj?: List<Input>): Output | Curried<Input, Output> {
   const innerReduce = (arrOrObj) => {
     if (arrOrObj instanceof Array) {
       return arrOrObj.reduce(fn, initialElement)

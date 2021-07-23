@@ -1,2 +1,2 @@
-import { Curried } from './types';
-export declare function groupBy<Input>(selector: Function | string): Curried<Input[], Object>;
+import { GroupSelector, Curried } from './types';
+export declare function groupBy<Input>(selector: GroupSelector<Input> | keyof Input): Curried<Input[], Object>;

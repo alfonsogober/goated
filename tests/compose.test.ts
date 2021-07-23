@@ -4,6 +4,7 @@ import { reduce } from '../dist/reduce'
 
 import * as mocha from 'mocha';
 import * as chai from 'chai';
+import { Curried } from '../src/types';
 
 const expect = chai.expect;
 
@@ -25,9 +26,9 @@ describe('goated.compose()', () => {
   });
 
   it('should compose with map and reduce', () => {
-    const double = (num: number) => num * 2
+    const double = map((num: number) => num * 2)
     const add = (a, b) => a + b
-    const doubleThenAdd = compose<number[], number>(reduce(add, 0), map(double))
+    const doubleThenAdd = compose<number[], number>(reduce(add, 0), <Curried<number, number>>double)
 
     expect(doubleThenAdd([1, 2, 3])).to.equal(12)
   });

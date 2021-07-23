@@ -1,3 +1,3 @@
-export function keys<Object>(obj: Object): string[] {
-  return Object.keys(obj)
+export function keys<Input>(obj: Input): Array<keyof Input> {
+  return Object.keys(obj) as Array<keyof Input>
 }

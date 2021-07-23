@@ -1,5 +1,4 @@
 import { Mapper, List, Curried } from './types';
-import { keys } from './keys'
 
 export function map<Input, Output>(fn: Mapper<Input, Output>, arrOrObj?: List<Input>): List<Output> | Curried<Input, Output> {
   const innerMap = (arrOrObj: List<Input>) => {
@@ -7,9 +6,7 @@ export function map<Input, Output>(fn: Mapper<Input, Output>, arrOrObj?: List<In
       return arrOrObj.map(fn)
     }
     else if (arrOrObj instanceof Object) {
-      let result = {}
-      keys(arrOrObj).map((key: string) => result[key] = fn(arrOrObj[key], key, arrOrObj))
-      return result
+      return Object.keys(arrOrObj).reduce((prev: Partial<Output>, curr: string) => ({ ...prev, [curr]: fn(arrOrObj[curr], curr, arrOrObj) }), {})
     }
     else throw new Error(`goated.map() only accepts arrays or objects. Received ${arrOrObj}`)
   }
