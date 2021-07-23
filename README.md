@@ -88,7 +88,7 @@ powThenNegate(3, 3) // -27
 Note that the first argument passed to `compose`, if it's a `goated` method where currying is optional (like `map`), its type must be explicitly set using either `as` or `<>`, like so:
 
 ```Typescript
-import { Curried } from 'goated/dist/types'
+import { Curried } from 'goated'
 
 const double = map((num: number) => num * 2)
 const add = (a, b) => a + b
@@ -288,7 +288,7 @@ powThenNegate(3, 3) // -27
 Note that the first argument passed to `pipe`, if it's a `goated` method where currying is optional (like `map`), its type must be explicitly set using either `as` or `<>`, like so:
 
 ```Typescript
-import { Curried } from 'goated/dist/types'
+import { Curried } from 'goated'
 
 const double = map((num: number) => num * 2)
 const add = (a, b) => a + b
@@ -317,8 +317,8 @@ const alice = {
   name: 'ALICE',
   age: 101
 };
-const favorite = R.prop('favoriteLibrary');
-const favoriteWithDefault = R.propOr('Goated', 'favoriteLibrary');
+const favorite = prop('favoriteLibrary');
+const favoriteWithDefault = propOr('Goated', 'favoriteLibrary');
 
 favorite(alice);  //=> undefined
 favoriteWithDefault(alice);  // 'Goated'
@@ -396,7 +396,7 @@ fn(3, 4) // 81
 ```
 
 ```Typescript
-import { Curried } from 'goated/dist/types'
+import { Curried } from 'goated'
 
 const fn = useWith<number, Curried<number, number>>(Math.pow, [identity, identity]);
 
@@ -406,7 +406,7 @@ fn3(4) // 81
 ```
 
 ```Typescript
-import { Curried } from 'goated/dist/types'
+import { Curried } from 'goated'
 
 const fn = useWith<number, Curried<number, number>>(Math.pow, [identity, identity]);
 
