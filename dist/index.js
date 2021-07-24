@@ -36,6 +36,7 @@ __exportStar(require("./map"), exports);
 __exportStar(require("./not"), exports);
 __exportStar(require("./omit"), exports);
 __exportStar(require("./path"), exports);
+__exportStar(require("./pathEq"), exports);
 __exportStar(require("./pathOr"), exports);
 __exportStar(require("./pick"), exports);
 __exportStar(require("./pipe"), exports);

@@ -287,6 +287,26 @@ const getFooBar = path<Foo>(["foo", "bar"])
 getFooBar(obj) // 2
 ```
 
+### pathEq
+
+Determines whether a nested path on an object has a specific value, in `equals` terms. Most likely used to filter a list.
+
+```Typescript
+import { Curried } from "goated"
+
+type Foo = { foo?: { bar?: number; baz: number } };
+
+const obj: Foo = { foo: { bar: 2, baz: 3 } };
+
+pathEq<Foo>(["foo", "bar"], 2, obj) // true
+
+const obj1: Foo = { foo: { baz: 3 } };
+
+const isFooBaz3 = <Curried<Foo, boolean>>pathEq<Foo>(["foo", "baz"], 4)
+
+isFooBaz3(obj1) // false
+```
+
 ### pathOr
 
 If the given, non-null object has a value at the given path, returns the value at that path. Otherwise returns the provided default value.

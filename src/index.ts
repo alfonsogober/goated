@@ -11,6 +11,7 @@ export * from "./map";
 export * from "./not";
 export * from "./omit";
 export * from "./path";
+export * from "./pathEq";
 export * from "./pathOr";
 export * from "./pick";
 export * from "./pipe";
