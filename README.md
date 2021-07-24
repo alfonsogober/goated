@@ -53,6 +53,7 @@ import { map, pipe, keys, filter, /* etc */ } from 'goated'
 - [`map`](#map)
 - [`not`](#not)
 - [`omit`](#omit)
+- [`path`](#path)
 - [`pathOr`](#pathOr)
 - [`pick`](#pick)
 - [`pipe`](#pipe)
@@ -268,6 +269,22 @@ omit(['a', 'd'], { a: 1, b: 2, c: 3, d: 4 }); // { b: 2, c: 3 }
 const omitAD = omit(['a', 'd'])
 
 omitAD({ a: 1, b: 2, c: 3, d: 4 }) // { b: 2, c: 3 }
+```
+
+### path
+
+Retrieve the value at a given path.
+
+```Typescript
+type Foo = { foo?: { bar?: number; baz: number } };
+
+const obj: Foo = { foo: { bar: 2, baz: 3 } };
+
+path<Foo>(["foo", "bar"], obj) // 2
+
+const getFooBar = path<Foo>(["foo", "bar"])
+
+getFooBar(obj) // 2
 ```
 
 ### pathOr

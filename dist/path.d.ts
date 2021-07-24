@@ -1,6 +1,5 @@
 import { Curried } from "./types";
-export declare function pathOr<Input extends object>(
-  defaultValue: any,
+export declare function path<Input extends object>(
   path: string[],
   arrOrObj?: Input
 ): any | Curried<Input, any>;
