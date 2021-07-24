@@ -54,6 +54,7 @@ import { map, pipe, keys, filter, /* etc */ } from 'goated'
 - [`not`](#not)
 - [`omit`](#omit)
 - [`path`](#path)
+- [`pathEq`](#pathEq)
 - [`pathOr`](#pathOr)
 - [`pick`](#pick)
 - [`pipe`](#pipe)
