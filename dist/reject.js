@@ -3,10 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.reject = void 0;
 const keys_1 = require("./keys");
 function reject(fn, arrOrObj) {
-  const innerFilter = (arrOrObj) => {
+  const innerReject = (arrOrObj) => {
     if (arrOrObj instanceof Array) {
       return arrOrObj.filter((item) => !fn(item));
-    } else if (arrOrObj instanceof Object) {
+    } else if (typeof arrOrObj === "object") {
       let result = {};
       keys_1.keys(arrOrObj).map((key) => {
         if (!fn(arrOrObj[key])) result[key] = arrOrObj[key];
@@ -17,6 +17,6 @@ function reject(fn, arrOrObj) {
         `goated.reject() only accepts arrays or objects. Received ${arrOrObj}`
       );
   };
-  return arrOrObj ? innerFilter(arrOrObj) : innerFilter;
+  return arrOrObj ? innerReject(arrOrObj) : innerReject;
 }
 exports.reject = reject;

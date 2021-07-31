@@ -1,14 +1,11 @@
 import { List, Curried, Predicate } from "./types";
 import { keys } from "./keys";
 
-export function filter<Input>(
-  fn: Predicate<Input>,
-  arrOrObj?: List<Input>
-): List<Input> | Curried<Input, Input> {
+export function filter<Input>(fn: Predicate<Input>, arrOrObj?: List<Input>) {
   const innerFilter = (arrOrObj: List<Input>) => {
     if (arrOrObj instanceof Array) {
       return arrOrObj.filter(fn);
-    } else if (arrOrObj instanceof Object) {
+    } else if (typeof arrOrObj === "object") {
       let result = {};
       keys(arrOrObj).map((key: string) => {
         if (fn(arrOrObj[key])) result[key] = arrOrObj[key];

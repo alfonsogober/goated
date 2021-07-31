@@ -40,19 +40,38 @@ import { map, pipe, keys, filter, /* etc */ } from 'goated'
 
 ### Quick Reference
 
+- [TODO] [`__`](#__)
+- [`add`](#add)
+- [`and`](#and)
+- [`all`](#all)
 - [`always`](#always)
+- [`append`](#append)
+- [TODO] [`apply`](#apply)
+- [`any`](#any)
+- [TODO] [`bind`](#bind)
+- [TODO] [`both`](#both)
+- [TODO] [`call`](#call)
 - [`compose`](#compose)
 - [`concat`](#concat)
 - [`cond`](#cond)
+- [TODO] [`curry`](#curry)
+- [`divide`](#divide)
+- [`divideBy`](#divideBy)
+- [TODO] [`empty`](#empty)
 - [`equals`](#equals)
 - [`F`](#F)
 - [`filter`](#filter)
 - [`groupBy`](#groupBy)
 - [`identity`](#identity)
+- [`isNil`](#isNil)
+- [`join`](#join)
 - [`keys`](#keys)
+- [TODO] [`length`](#length)
 - [`map`](#map)
+- [`multiply`](#multiply)
 - [`not`](#not)
 - [`omit`](#omit)
+- [`or`](#or)
 - [`path`](#path)
 - [`pathEq`](#pathEq)
 - [`pathOr`](#pathOr)
@@ -62,6 +81,8 @@ import { map, pipe, keys, filter, /* etc */ } from 'goated'
 - [`propOr`](#propOr)
 - [`reduce`](#reduce)
 - [`reject`](#reject)
+- [`subtract`](#subtract)
+- [`split`](#split)
 - [`T`](#T)
 - [`tail`](#tail)
 - [`useWith`](#useWith)
@@ -101,6 +122,34 @@ const doubleThenAdd = compose<number[], number>(<Curried<number, number>>reduce(
 // Necessary because map() returns either a curried fn or a list.
 
 doubleThenAdd([1, 2, 3]) // 12
+```
+
+Also works with `async` / `await`! Returned value must be `awaited` or its `then` handler called. Performs auto-detection of a Promise/Thenable in the arguments, converting all results to a Promise upon detection.
+
+```Typescript
+import { Curried } from 'goated'
+
+type Foo = { foo: number }
+const double = map((num: number) => num * 2);
+const add = (a, b) => a + b;
+const fetch = async (num) => ({ foo: num })
+
+const doubleThenAddFetch = compose<number[], Promise<Foo>>(
+  fetch,
+  reduce(add, 0),
+  <Curried<number, number>>double
+);
+
+async () => {
+  await doubleThenAddFetch([1, 2, 3]) // { foo: 12 }
+}
+
+// or
+
+doubleThenAddFetch([1, 2, 3])
+  .then((obj: Foo) => {
+    // obj = { foo: 12 }
+  })
 ```
 
 ### concat
@@ -357,6 +406,27 @@ const doubleThenAdd = pipe<number[], number>(<Curried<number, number>>double, re
 // Necessary because map() returns either a curried fn or a list.
 
 doubleThenAdd([1, 2, 3]) // 12
+```
+
+Also works with `async` / `await`! Returned value must be `awaited` or its `then` handler called. Performs auto-detection of a Promise/Thenable in the arguments, converting all results to a Promise upon detection.
+
+```Typescript
+import { Curried } from 'goated'
+
+type Foo = { foo: number }
+const double = map((num: number) => num * 2);
+const add = (a, b) => a + b;
+const fetch = async (num) => ({ foo: num })
+
+const doubleThenAddFetch = pipe<number[], Promise<Foo>>(
+  <Curried<number, number>>double,
+  reduce(add, 0),
+  fetch
+);
+
+async () => {
+  await doubleThenAddFetch([1, 2, 3]) // { foo: 12 }
+}
 ```
 
 ### prop
