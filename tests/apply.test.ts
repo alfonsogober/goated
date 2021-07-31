@@ -13,7 +13,7 @@ describe("goated.apply()", () => {
 
   it("should (curried) apply args to function", () => {
     const nums = [1, 2, 3, -99, 42, 6, 7];
-    const getMax = apply(Math.max)
+    const getMax = apply(Math.max);
     expect(getMax(nums)).to.equal(42);
   });
 });
