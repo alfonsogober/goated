@@ -1,6 +1,6 @@
 import { Curried } from "./types";
 
-export function cond(pairs: Function[][], ...rest): Curried<any, any> {
+export function cond(pairs: (Function | Curried<any, any>)[][], ...rest): Curried<any, any> {
   const innerCond = (...rest) => {
     for (let i = 0; i < pairs.length; i++) {
       if (pairs[i][0].apply(pairs[i][0], rest))

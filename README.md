@@ -40,33 +40,33 @@ import { map, pipe, keys, filter, /* etc */ } from 'goated'
 
 ### Quick Reference
 
-- [TODO] [`__`](#__)
 - [`add`](#add)
-- [`and`](#and)
 - [`all`](#all)
 - [`always`](#always)
-- [`append`](#append)
-- [TODO] [`apply`](#apply)
+- [`and`](#and)
 - [`any`](#any)
-- [TODO] [`bind`](#bind)
-- [TODO] [`both`](#both)
-- [TODO] [`call`](#call)
+- [`append`](#append)
+- [`apply`](#apply)
+- [`bind`](#bind)
+- [`both`](#both)
+- [`call`](#call)
 - [`compose`](#compose)
 - [`concat`](#concat)
 - [`cond`](#cond)
-- [TODO] [`curry`](#curry)
+- [`curry`](#curry)
 - [`divide`](#divide)
 - [`divideBy`](#divideBy)
-- [TODO] [`empty`](#empty)
+- [`empty`](#empty)
 - [`equals`](#equals)
 - [`F`](#F)
 - [`filter`](#filter)
 - [`groupBy`](#groupBy)
 - [`identity`](#identity)
+- [`is`](#is)
 - [`isNil`](#isNil)
 - [`join`](#join)
 - [`keys`](#keys)
-- [TODO] [`length`](#length)
+- [`length`](#length)
 - [`map`](#map)
 - [`multiply`](#multiply)
 - [`not`](#not)
@@ -85,9 +85,41 @@ import { map, pipe, keys, filter, /* etc */ } from 'goated'
 - [`split`](#split)
 - [`T`](#T)
 - [`tail`](#tail)
+- [`toAsync`](#toAsync)
 - [`useWith`](#useWith)
 - [`values`](#values)
 - [`when`](#when)
+
+### add
+
+Adds two values.
+
+See also [`subtract`](#subtract).
+
+```Typescript
+add(2, 3); //  5
+add(7)(10); // 17
+```
+
+### all
+
+Returns true if all elements of the list match the predicate, false if there are any that don't.
+
+If the list contains Promises, dispatches to `Bluebird.all()`
+
+See also [`any`](#any).
+
+```Typescript
+const equals3 = R.equals(3);
+all(equals3)([3, 3, 3, 3]); // true
+all(equals3)([3, 3, 1, 3]); // false
+
+all([
+  Promise.resolve({}),
+  Promise.resolve(3),
+  Promise.resolve(true),
+]).then((res) => console.log(res)) // [{}, 3, true]
+```
 
 ### always
 
@@ -97,6 +129,22 @@ Returns a function that always returns the given value. Note that for non-primit
 const foo = always('foo')
 foo() // 'foo'
 ```
+
+### and
+
+Returns true if both arguments are true; false otherwise.
+
+```Typescript
+and(true, true); // true
+and(true, false); // false
+and(false, true); // false
+and(false, false); // false
+
+```
+
+### any
+
+### append
 
 ### compose
 
@@ -181,6 +229,10 @@ fn(0) // 'water freezes at 0°C'
 fn(50) // 'nothing special happens at 50°C'
 fn(100) // 'water boils at 100°C'
 ```
+
+### divide
+
+### divideBy
 
 ### equals
 
@@ -267,6 +319,12 @@ const obj = {};
 identity(obj) === obj // true
 ```
 
+### is
+
+### isNil
+
+### join
+
 ### keys
 
 Returns a list containing the names of all the enumerable own properties of the supplied object. Note that the order of the output array is not guaranteed to be consistent across different JS platforms.
@@ -298,6 +356,8 @@ map<number, number>(double, array) // [2, 4, 6]
 map<number, number>(double, obj) // { 'foo': 2, 'bar': 4, 'baz': 6 }
 ```
 
+### multiply
+
 ### not
 
 A function that returns the `!` of its argument. It will return true when passed a falsy value, and false when passed a truthy one.
@@ -320,6 +380,8 @@ const omitAD = omit(['a', 'd'])
 
 omitAD({ a: 1, b: 2, c: 3, d: 4 }) // { b: 2, c: 3 }
 ```
+
+### or
 
 ### path
 
@@ -477,12 +539,14 @@ const rejectOdd = (item: number) => item % 2 === 1
 
 const array = [1, 2, 3]
 
-filter<number>(rejectOdd, array) // [2]
+reject<number>(rejectOdd, array) // [2]
 
 const obj = { foo: 1, bar: 2, baz: 3 }
 
-filter<number>(rejectOdd, obj) // { bar: 2 }
+reject<number>(rejectOdd, obj) // { bar: 2 }
 ```
+
+### subtract
 
 ### T
 
@@ -513,6 +577,8 @@ Dispatches to the `take` method of the second argument, if present.
 ```Typescript
 take<string>(2, ['foo', 'bar', 'baz']) // ['foo', 'bar']
 ```
+
+### toAsync
 
 ### useWith
 
