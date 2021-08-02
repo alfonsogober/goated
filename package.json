@@ -1,6 +1,6 @@
 {
   "name": "goated",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "a currying library for goats 🐐",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
