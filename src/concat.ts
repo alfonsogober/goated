@@ -1,9 +1,11 @@
 import { Curried, Semigroup } from "./types";
 
 export function concat<Input>(
-  a: Semigroup<Input>,
-  b?: Semigroup<Input>
+  a: Input[],
+  ...rest
 ): Semigroup<Input> | Curried<Semigroup<Input>, Semigroup<Input>> {
-  const innerConcat = (b) => a.concat(b);
-  return b ? innerConcat(b) : innerConcat;
+  const innerConcat = (...args) => a.concat.apply(a, args);
+  return a instanceof Array && rest[0]
+    ? innerConcat.apply(innerConcat, rest)
+    : innerConcat;
 }

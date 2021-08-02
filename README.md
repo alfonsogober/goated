@@ -49,7 +49,6 @@ import { map, pipe, keys, filter, /* etc */ } from 'goated'
 - [`apply`](#apply)
 - [`bind`](#bind)
 - [`both`](#both)
-- [`call`](#call)
 - [`compose`](#compose)
 - [`concat`](#concat)
 - [`cond`](#cond)
@@ -60,6 +59,8 @@ import { map, pipe, keys, filter, /* etc */ } from 'goated'
 - [`equals`](#equals)
 - [`F`](#F)
 - [`filter`](#filter)
+- [`find`](#find)
+- [`flip`](#flip)
 - [`groupBy`](#groupBy)
 - [`identity`](#identity)
 - [`is`](#is)
@@ -78,9 +79,11 @@ import { map, pipe, keys, filter, /* etc */ } from 'goated'
 - [`pick`](#pick)
 - [`pipe`](#pipe)
 - [`prop`](#prop)
+- [`propEq`](#propEq)
 - [`propOr`](#propOr)
 - [`reduce`](#reduce)
 - [`reject`](#reject)
+- [`reverse`](#reverse)
 - [`subtract`](#subtract)
 - [`split`](#split)
 - [`T`](#T)
@@ -110,7 +113,7 @@ If the list contains Promises, dispatches to `Bluebird.all()`
 See also [`any`](#any).
 
 ```Typescript
-const equals3 = R.equals(3);
+const equals3 = equals(3);
 all(equals3)([3, 3, 3, 3]); // true
 all(equals3)([3, 3, 1, 3]); // false
 
@@ -134,6 +137,8 @@ foo() // 'foo'
 
 Returns true if both arguments are true; false otherwise.
 
+See also [`or`](#or).
+
 ```Typescript
 and(true, true); // true
 and(true, false); // false
@@ -144,7 +149,29 @@ and(false, false); // false
 
 ### any
 
+Returns true if at least one of the elements of the list match the predicate, false otherwise.
+
+```Typescript
+any([0, false, true]) // true
+any([NaN, 0, false]) // false
+```
+
 ### append
+
+Returns a new list containing the contents of the given list, followed by the given element.
+
+```Typescript
+append('tests', ['write', 'more']) // ['write', 'more', 'tests']
+```
+
+### apply
+
+Applies function fn to the argument list args. This is useful for creating a fixed-arity function from a variadic function. fn should be a bound function if context is significant.
+
+```Typescript
+const nums = [1, 2, 3, -99, 42, 6, 7];
+apply(Math.max, nums); // 42
+```
 
 ### compose
 
@@ -232,7 +259,29 @@ fn(100) // 'water boils at 100°C'
 
 ### divide
 
+Divides two numbers. Equivalent to a / b.
+
+See also [`multiply`](#multiply).
+
+```Typescript
+divide(71, 100); // 0.71
+
+const reciprocal = divide(1);
+reciprocal(4);   // 0.25
+```
+
 ### divideBy
+
+Divides the second number by the first. Equivalent to b / a.
+
+See also [`multiply`](#multiply).
+
+```Typescript
+divideBy(4, 40) // 10
+
+const half = divideBy(2);
+half(42); // 21
+```
 
 ### equals
 
@@ -290,6 +339,16 @@ const filterOnlyOdd = <Curried<Foo, number>>filter<number>(onlyOdd);
 filterOnlyOdd(obj) // { foo: 1, baz: 3 }
 ```
 
+### find
+
+Returns the first element of the list which matches the predicate, or undefined if no element matches.
+
+```Typescript
+const xs = [{ a: 1 }, { a: 2 }, { a: 3 }];
+find(propEq('a', 2))(xs); // { a: 2 }
+find(propEq('a', 4))(xs); // undefined
+```
+
 ### groupBy
 
 Splits a list into sub-lists stored in an object, based on the result of **either** calling a String-returning function on each element **or** evaluating the selector key of each element, and grouping the results according to values returned.
@@ -307,6 +366,18 @@ const groupByKey = groupBy<ObjType>('a')
 groupByKey([{ a: 'b' }, { a: 'd' }]) // { b: [{ a: 'b' }], d: [{ a: 'd' }] }
 ```
 
+### head
+
+Returns the first element of the given list or string.
+
+```Typescript
+head(['fi', 'fo', 'fum']); // 'fi'
+head([]); // undefined
+
+head('abc'); // 'a'
+head(''); // ''
+```
+
 ### identity
 
 A function that does nothing but return the parameter supplied to it. Good as a default or placeholder function.
@@ -321,9 +392,41 @@ identity(obj) === obj // true
 
 ### is
 
+See if an object (val) is an instance of the supplied constructor. This function will check up the inheritance chain, if any.
+
+```Typescript
+is(Object, {}); // true
+is(Number, 1); // true
+is(Object, 1); // false
+is(String, 's'); // true
+is(String, new String('')); // true
+is(Object, new String('')); // true
+is(Object, 's'); // false
+is(Number, {}); // false
+```
+
 ### isNil
 
+Checks if the input value is `null` or `undefined`.
+
+```Typescript
+isNil(null); // true
+isNil(undefined); // true
+isNil(0); // false
+isNil([]); // false
+```
+
 ### join
+
+Returns a string made by inserting the separator between each element and concatenating all the elements into a single string.
+
+See also [`split`](#split)
+
+```Typescript
+const spacer = join(' ');
+spacer(['a', 2, 3.4]);   // 'a 2 3.4'
+join('|', [1, 2, 3]);    // '1|2|3'
+```
 
 ### keys
 
@@ -358,6 +461,20 @@ map<number, number>(double, obj) // { 'foo': 2, 'bar': 4, 'baz': 6 }
 
 ### multiply
 
+Multiplies two numbers. Equivalent to `a * b` but curried.
+
+See also [`divide`](#divide).
+
+```Typescript
+import { multiply } from 'goated'
+
+const double = multiply(2);
+const triple = multiply(3);
+double(3);       //  6
+triple(4);       // 12
+multiply(2, 5);  // 10
+```
+
 ### not
 
 A function that returns the `!` of its argument. It will return true when passed a falsy value, and false when passed a truthy one.
@@ -382,6 +499,17 @@ omitAD({ a: 1, b: 2, c: 3, d: 4 }) // { b: 2, c: 3 }
 ```
 
 ### or
+
+Returns `true` if one or both of its arguments are true. Returns `false` if both arguments are false.
+
+See also [`and`](#and).
+
+```Typescript
+or(true, true); // true
+or(true, false); // true
+or(false, true); // true
+or(false, false); // false
+```
 
 ### path
 
@@ -501,6 +629,25 @@ prop('x', {}); // undefined
 prop(0, [100]); // 100
 ```
 
+### propEq
+
+Returns `true` if the specified object property is equal, in `equals` terms, to the given value; `false` otherwise.
+
+```Typescript
+import { filter, propEq } from 'goated'
+
+type Kid = { name: string; age: number; hair: string; }
+
+const abby = {name: 'Abby', age: 7, hair: 'blond'};
+const fred = {name: 'Fred', age: 12, hair: 'brown'};
+const rusty = {name: 'Rusty', age: 10, hair: 'brown'};
+const alois = {name: 'Alois', age: 15, disposition: 'surly'};
+const kids = [abby, fred, rusty, alois];
+const hasBrownHair = propEq('hair', 'brown');
+
+filter(<Curried<Kid, boolean>>hasBrownHair, kids); // [fred, rusty]
+```
+
 ### propOr
 
 If the given, non-null object has an own property with the specified name, returns the value of that property. Otherwise returns the provided default value.
@@ -546,7 +693,36 @@ const obj = { foo: 1, bar: 2, baz: 3 }
 reject<number>(rejectOdd, obj) // { bar: 2 }
 ```
 
+### reverse
+
+Returns a new list or string with the elements or characters in reverse order.
+
+```Typescript
+reverse([1, 2, 3]);  // [3, 2, 1]
+```
+
 ### subtract
+
+Subtracts its second argument from its first argument.
+
+See also [`add`](#add).
+
+```Typescript
+subtract(10, 8) // 2
+```
+
+### split
+
+Splits a string into an array of strings based on the given separator.
+
+See also [`join`](#join).
+
+```Typescript
+const pathComponents = split('/');
+tail(pathComponents('/usr/local/bin/node')); // ['usr', 'local', 'bin', 'node']
+
+split('.', 'a.b.c.xyz.d'); // ['a', 'b', 'c', 'xyz', 'd']
+```
 
 ### T
 
@@ -562,7 +738,7 @@ T() // true
 
 Returns all but the first element of the given list or string (or object with a tail method).
 
-Dispatches to the `slice` method of the first argument, if present.
+See also [`head`](#head).
 
 ```Typescript
 tail([1, 2, 3])  // [2, 3]
@@ -572,13 +748,24 @@ tail([1, 2, 3])  // [2, 3]
 
 Returns the first `n` elements of the given list or string (or object with a take method).
 
-Dispatches to the `take` method of the second argument, if present.
-
 ```Typescript
 take<string>(2, ['foo', 'bar', 'baz']) // ['foo', 'bar']
 ```
 
 ### toAsync
+
+Returns the function provided wrapped in an `async` function. Note that this is the same as wrapping it in a Promise.
+
+```Typescript
+const array = [1, 2, 3];
+const double = (item: number) => item * 2;
+const doubleAsync = toAsync(double); // Returns async () => double
+
+// works with goated.map()
+async () => {
+  await all(<Promise<number>[]>map(doubleAsync, array)) // [2, 4, 6]
+}
+```
 
 ### useWith
 
