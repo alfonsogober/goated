@@ -1,14 +1,11 @@
 import { List, Curried, Predicate } from "./types";
 import { keys } from "./keys";
 
-export function reject<Input>(
-  fn: Predicate<Input>,
-  arrOrObj?: List<Input>
-): List<Input> | Curried<Input, Input> {
-  const innerFilter = (arrOrObj: List<Input>) => {
+export function reject<Input>(fn: Predicate<Input>, arrOrObj?: List<Input>) {
+  const innerReject = (arrOrObj: List<Input>) => {
     if (arrOrObj instanceof Array) {
       return arrOrObj.filter((item) => !fn(item));
-    } else if (arrOrObj instanceof Object) {
+    } else if (typeof arrOrObj === "object") {
       let result = {};
       keys(arrOrObj).map((key: string) => {
         if (!fn(arrOrObj[key])) result[key] = arrOrObj[key];
@@ -19,5 +16,5 @@ export function reject<Input>(
         `goated.reject() only accepts arrays or objects. Received ${arrOrObj}`
       );
   };
-  return arrOrObj ? innerFilter(arrOrObj) : innerFilter;
+  return arrOrObj ? innerReject(arrOrObj) : innerReject;
 }

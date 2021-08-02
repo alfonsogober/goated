@@ -34,4 +34,18 @@ describe("goated.compose()", () => {
 
     expect(doubleThenAdd([1, 2, 3])).to.equal(12);
   });
+
+  it("should compose async", async () => {
+    const double = map((num: number) => num * 2);
+    const add = (a, b) => a + b;
+    const fetch = async (num) => ({ foo: num });
+
+    const doubleThenAddFetch = compose<number[], Promise<{ foo: number }>>(
+      fetch,
+      reduce(add, 0),
+      <Curried<number, number>>double
+    );
+
+    expect(await doubleThenAddFetch([1, 2, 3])).to.deep.equal({ foo: 12 });
+  });
 });

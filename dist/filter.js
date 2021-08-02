@@ -6,7 +6,7 @@ function filter(fn, arrOrObj) {
   const innerFilter = (arrOrObj) => {
     if (arrOrObj instanceof Array) {
       return arrOrObj.filter(fn);
-    } else if (arrOrObj instanceof Object) {
+    } else if (typeof arrOrObj === "object") {
       let result = {};
       keys_1.keys(arrOrObj).map((key) => {
         if (fn(arrOrObj[key])) result[key] = arrOrObj[key];

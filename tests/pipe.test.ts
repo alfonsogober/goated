@@ -34,4 +34,18 @@ describe("goated.pipe()", () => {
 
     expect(doubleThenAdd([1, 2, 3])).to.equal(12);
   });
+
+  it("should pipe async", async () => {
+    const double = map((num: number) => num * 2);
+    const add = (a, b) => a + b;
+    const fetch = async (num) => ({ foo: num });
+
+    const doubleThenAddFetch = pipe<number[], Promise<{ foo: number }>>(
+      <Curried<number, number>>double,
+      reduce(add, 0),
+      fetch
+    );
+
+    expect(await doubleThenAddFetch([1, 2, 3])).to.deep.equal({ foo: 12 });
+  });
 });
